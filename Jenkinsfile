@@ -6,8 +6,16 @@ pipeline {
    stages{
     stage('CompileandRunSonarAnalysis') {
             steps {	
-		sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=ikilizabuggywebapp -Dsonar.organization=ikilizabuggywebapp -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=b9de06f3f3b61f2963c6eaea489085daedebc603'
+		sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=ikilizabuggywebapp -Dsonar.organization=ikilizabuggywebapp -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=932558e169d66a8f1d1adf470b908a46156f5844'
 			}
-        } 
+    }
+
+	stage('RunSCAAnalysisUsingSnyk') {
+            steps {		
+				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+					sh 'mvn snyk:test -fn'
+				}
+			}
+    }		
   }
 }
